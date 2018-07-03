@@ -20,34 +20,31 @@ import com.google.common.collect.Lists;
 
 import java.util.Deque;
 
-public class RelativePathTracker {
-    private final Deque<String> relativePath = Lists.newLinkedList();
-    private String rootName;
+public class RelativePathHolder extends RelativePathTracker {
+    private final Deque<String> relativePathStrings = Lists.newLinkedList();
 
-
+    @Override
     public void enter(String name) {
-        if (rootName == null) {
-            rootName = name;
-        } else {
-            relativePath.addLast(name);
+        if (!isRoot()) {
+            String previous = relativePathStrings.peekLast();
+            if (previous == null) {
+                relativePathStrings.addLast(name);
+            } else {
+                relativePathStrings.addLast(previous + '/' + name);
+            }
         }
+        super.enter(name);
     }
 
+    @Override
     public String leave() {
-        if (relativePath.isEmpty()) {
-            String currentRootName = rootName;
-            rootName = null;
-            return currentRootName;
-        } else {
-            return relativePath.removeLast();
+        if (!relativePathStrings.isEmpty()) {
+            relativePathStrings.removeLast();
         }
+        return super.leave();
     }
 
-    public Iterable<String> getRelativePath() {
-        return relativePath;
-    }
-
-    public boolean isRoot() {
-        return rootName == null;
+    public String getRelativePathString() {
+        return relativePathStrings.getLast();
     }
 }
