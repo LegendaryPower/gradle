@@ -24,7 +24,7 @@ import spock.lang.Subject
 class JarClasspathSnapshotFactoryTest extends Specification {
 
     def snapshotter = Mock(JarSnapshotter)
-    @Subject factory = new JarClasspathSnapshotFactory(snapshotter)
+    @Subject factory = new JarClasspathSnapshotFactory(snapshotter, buildOperationExecutor)
 
     def "creates classpath snapshot with correct duplicate classes"() {
         def jar1 = stubArchive("f1"); def jar2 = stubArchive("f2"); def jar3 = stubArchive("f3")
